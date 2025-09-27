@@ -466,6 +466,112 @@ class HuobiFuturesAdapter(FuturesExchangeAdapter):
             self.error_count += 1
             return {}
 
+class BingxFuturesAdapter(FuturesExchangeAdapter):
+    """Адаптер для BingX фьючерсов"""
+    
+    def __init__(self):
+        super().__init__("BINGX_FUTURES", "https://open-api.bingx.com")
+    
+    def get_futures_tickers(self) -> Dict[str, Dict]:
+        """Получение фьючерсных тикеров с BingX"""
+        try:
+            # BingX API endpoint для получения 24hr ticker statistics
+            # Используем spot API, так как futures API может требовать аутентификацию
+            url = f"{self.api_url}/openApi/spot/v1/ticker/24hr"
+            
+            # Добавляем timestamp параметр
+            import time
+            params = {
+                'timestamp': int(time.time() * 1000)
+            }
+            
+            response = requests.get(url, params=params, timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                tickers = {}
+                
+                # Проверяем структуру ответа BingX
+                if data.get('code') == 0 and 'data' in data:
+                    raw_tickers = data['data']
+                    
+                    for item in raw_tickers:
+                        symbol = item.get('symbol', '')
+                        price = item.get('lastPrice', '0')
+                        volume = item.get('quoteVolume', '0')  # Используем quoteVolume для USD объема
+                        change = item.get('priceChangePercent', '0')
+                        open_interest = '0'  # Spot API не предоставляет open interest
+                        
+                        # Конвертируем формат символа из BTC-USDT в BTCUSDT
+                        if symbol.endswith('-USDT'):
+                            standard_symbol = symbol.replace('-USDT', 'USDT')
+                            try:
+                                price_val = float(price)
+                                volume_val = float(volume)
+                                
+                                # Валидация данных
+                                if not DataValidator.validate_price(price_val, standard_symbol):
+                                    continue
+                                if not DataValidator.validate_volume(volume_val, standard_symbol):
+                                    continue
+                                    
+                                tickers[standard_symbol] = {
+                                    'price': price_val,
+                                    'volume': volume_val,
+                                    'change': float(change.replace('%', '')),  # Убираем % из строки
+                                    'open_interest': float(open_interest),
+                                    'high': float(item.get('highPrice', '0')),
+                                    'low': float(item.get('lowPrice', '0'))
+                                }
+                            except ValueError:
+                                continue
+                else:
+                    # Альтернативный формат ответа или fallback
+                    if isinstance(data, list):
+                        for item in data:
+                            symbol = item.get('symbol', '')
+                            price = item.get('lastPrice', '0')
+                            volume = item.get('volume', '0')
+                            change = item.get('priceChangePercent', '0')
+                            open_interest = item.get('openInterest', '0')
+                            
+                            if symbol.endswith('USDT'):
+                                try:
+                                    price_val = float(price)
+                                    volume_val = float(volume)
+                                    
+                                    # Валидация данных
+                                    if not DataValidator.validate_price(price_val, symbol):
+                                        continue
+                                    if not DataValidator.validate_volume(volume_val, symbol):
+                                        continue
+                                        
+                                    tickers[symbol] = {
+                                        'price': price_val,
+                                        'volume': volume_val,
+                                        'change': float(change),
+                                        'open_interest': float(open_interest),
+                                        'high': float(item.get('highPrice', '0')),
+                                        'low': float(item.get('lowPrice', '0'))
+                                    }
+                                except ValueError:
+                                    continue
+                
+                self.is_connected = True
+                self.error_count = 0
+                self.last_update = datetime.now()
+                return tickers
+            else:
+                self.is_connected = False
+                self.error_count += 1
+                return {}
+                
+        except Exception as e:
+            self.is_connected = False
+            self.error_count += 1
+            return {}
+
 class FuturesExchangeManager:
     """Менеджер для управления всеми фьючерсными биржами"""
     
@@ -477,7 +583,8 @@ class FuturesExchangeManager:
             'GATE_FUTURES': GateFuturesAdapter(),
             'MEXC_FUTURES': MexcFuturesAdapter(),
             'BINANCE_FUTURES': BinanceFuturesAdapter(),
-            'HUOBI_FUTURES': HuobiFuturesAdapter()
+            'HUOBI_FUTURES': HuobiFuturesAdapter(),
+            'BINGX_FUTURES': BingxFuturesAdapter()
         }
         self.tickers_cache = {}
         self.last_update = None
@@ -656,7 +763,7 @@ class FuturesArbitrageBot:
         self.running = True
         
         logger.log(f"{Fore.CYAN}🤖 Запуск Telegram бота с черным списком монет{Style.RESET_ALL}")
-        logger.log(f"{Fore.CYAN}Поддерживаемые биржи: Bybit Futures, Bitget Futures, Gate.io Futures, MEXC Futures, Binance Futures, Huobi Futures{Style.RESET_ALL}")
+        logger.log(f"{Fore.CYAN}Поддерживаемые биржи: Bybit Futures, Bitget Futures, Gate.io Futures, MEXC Futures, Binance Futures, Huobi Futures, BingX Futures{Style.RESET_ALL}")
         logger.log(f"{Fore.CYAN}Telegram уведомления: > 5% прибыли{Style.RESET_ALL}")
         logger.log(f"{Fore.CYAN}Черный список: {self.blacklist.get_blacklist_count()} монет{Style.RESET_ALL}")
         logger.log("")

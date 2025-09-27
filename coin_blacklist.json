@@ -1,20 +1,25 @@
 {
   "blacklisted_coins": [
-    "ALPHAUSDT",
-    "WAVESUSDT",
     "SNTUSDT",
+    "ALPHAUSDT",
+    "ZKUSDT",
+    "MEMEFIUSDT",
+    "ANIUSDT",
     "BSWUSDT",
-    "MLNUSDT",
-    "OMGUSDT",
     "ZECUSDT",
+    "OMGUSDT",
+    "MLNUSDT",
+    "WAVESUSDT",
+    "TUTUSDT",
+    "ALLUSDT",
+    "BADGERUSDT",
+    "SWTCHUSDT",
+    "SYNDUSDT",
     "BALUSDT",
     "SCRTUSDT",
-    "NEIROETHUSDT",
-    "ZKUSDT",
-    "ALLUSDT",
-    "MEMEFIUSDT",
-    "BADGERUSDT"
+    "CARDSUSDT",
+    "NEIROETHUSDT"
   ],
-  "last_updated": "2025-09-27T03:52:52.733176",
-  "total_count": 14
+  "last_updated": "2025-09-27T22:37:36.735722",
+  "total_count": 19
 }

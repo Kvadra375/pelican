@@ -48,7 +48,7 @@ coin_blacklist.json
 *.sqlite3
 
 # Config files with sensitive data
-config.py
+# config.py - теперь включен в git с placeholder значениями
 
 # Logs
 *.log

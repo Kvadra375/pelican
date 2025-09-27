@@ -98,11 +98,15 @@ USERS_FILE = "telegram_users.json"
 BLACKLIST_FILE = "coin_blacklist.json"
 ```
 
-### Создание своей конфигурации:
+### Настройка токена:
 
-1. Скопируйте `config_example.py` в `config.py`
-2. Замените `YOUR_BOT_TOKEN_HERE` на ваш токен бота
-3. Настройте другие параметры по необходимости
+1. Откройте файл `config.py`
+2. Замените `YOUR_BOT_TOKEN_HERE` на ваш токен бота:
+   ```python
+   TELEGRAM_BOT_TOKEN = "ВАШ_ТОКЕН_БОТА_ЗДЕСЬ"
+   ```
+3. Сохраните файл
+4. Запустите: `python futures_arbitrage_blacklist.py`
 
 ## 📊 Примеры работы
 

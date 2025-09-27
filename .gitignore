@@ -1,59 +1,21 @@
-# Python
+# Конфигурационные файлы с секретами
+config.py
+
+# Кэш Python
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
+*.pyc
+*.pyo
+*.pyd
 .Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
 
-# Virtual Environment
-venv/
-env/
-ENV/
-env.bak/
-venv.bak/
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Project specific
+# Логи
+*.log
 arbitrage_log.txt
+
+# Данные пользователей
 telegram_users.json
 coin_blacklist.json
-*.db
-*.sqlite
-*.sqlite3
 
-# Config files with sensitive data
-# config.py - теперь включен в git с placeholder значениями
-
-# Logs
-*.log
-logs/
-
-# Temporary files
+# Временные файлы
 *.tmp
 *.temp

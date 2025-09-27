@@ -1,0 +1,20 @@
+{
+  "blacklisted_coins": [
+    "ALPHAUSDT",
+    "WAVESUSDT",
+    "SNTUSDT",
+    "BSWUSDT",
+    "MLNUSDT",
+    "OMGUSDT",
+    "ZECUSDT",
+    "BALUSDT",
+    "SCRTUSDT",
+    "NEIROETHUSDT",
+    "ZKUSDT",
+    "ALLUSDT",
+    "MEMEFIUSDT",
+    "BADGERUSDT"
+  ],
+  "last_updated": "2025-09-27T03:52:52.733176",
+  "total_count": 14
+}
